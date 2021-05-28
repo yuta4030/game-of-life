@@ -70,11 +70,12 @@
 }
 
 .grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: 800px;
+  min-width: 200px;
   margin-top: 3rem;
 }
 

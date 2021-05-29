@@ -3,60 +3,42 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
 function Cell(props) {
-  return (<button>{props.value ? "1": "0"}</button>)
+  return (
+    <button onClick={props.onClick}>
+     {props.value ? "1": "0"}
+    </button>
+  )
 }
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      squares: Array(9).fill(null),
-      isAlive: false,
+      cells: Array(40).fill(false),
     };
   }
 
+  handleClick(i) {
+    const cells = this.state.cells.slice();
+    cells[i] = !cells[i]
+    this.setState({
+      cells: cells,
+    });
+  }
+
   render() {
+    var cell_list = []
+    for(let i = 0; i < this.state.cells.length; i++){
+      cell_list.push(
+        <Cell 
+          key={i}
+          value={this.state.cells[i]}
+          onClick={() => this.handleClick(i)}
+        />
+      )
+    }
     return (
       <div className={styles.grid}>
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
-        <Cell value={this.state.isAlive} />
+        {cell_list}
       </div>
     );
   }

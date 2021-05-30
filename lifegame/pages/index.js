@@ -10,11 +10,22 @@ function Cell(props) {
     </button>
   )
 }
+
+function ControlePanel(props) {
+  return (
+    <button onClick={props.onClick}>
+      {props.isPlayed ? "⏸" : "▶️️"}
+    </button>
+  )
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.timer
     this.state = {
-      cells: Array(40).fill(false),
+      cells: Array(60).fill(false),
+      isPlayed: false,
     };
   }
 
@@ -24,6 +35,25 @@ class Game extends React.Component {
     this.setState({
       cells: cells,
     });
+  }
+
+  handleClickControle() {
+    var isPlayed = this.state.isPlayed;
+    isPlayed = !isPlayed
+
+    this.setState({
+      isPlayed: isPlayed,
+    })
+
+    if (isPlayed) {
+      var cnt = 0
+      this.timer = setInterval(() => {
+        console.log(cnt++)
+      }, 1000)
+    } else {
+      clearInterval(this.timer)
+    }
+
   }
 
   render() {
@@ -38,9 +68,17 @@ class Game extends React.Component {
       )
     }
     return (
+      <>
       <div className={styles.grid}>
         {cell_list}
       </div>
+      <div className={styles.description}>
+        <ControlePanel 
+          isPlayed={this.state.isPlayed}
+          onClick={() => this.handleClickControle()}
+        />
+      </div>
+      </>
     );
   }
 }

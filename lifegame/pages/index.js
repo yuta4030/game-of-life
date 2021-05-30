@@ -2,10 +2,11 @@ import React from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
+
 function Cell(props) {
   return (
     <button onClick={props.onClick}>
-     {props.value ? "1": "0"}
+     {props.number ? "1" : "0"}
     </button>
   )
 }
@@ -17,7 +18,7 @@ class Game extends React.Component {
     };
   }
 
-  handleClick(i) {
+  handleClickCell(i) {
     const cells = this.state.cells.slice();
     cells[i] = !cells[i]
     this.setState({
@@ -31,8 +32,8 @@ class Game extends React.Component {
       cell_list.push(
         <Cell 
           key={i}
-          value={this.state.cells[i]}
-          onClick={() => this.handleClick(i)}
+          number={this.state.cells[i]}
+          onClick={() => this.handleClickCell(i)}
         />
       )
     }

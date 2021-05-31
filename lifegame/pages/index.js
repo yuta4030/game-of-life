@@ -24,48 +24,127 @@ class Game extends React.Component {
     super(props);
     this.timer
     this.state = {
-      cells: Array(60).fill(false),
+      cells: this.create2DArray(20, 40, false),
       isPlayed: false,
     };
   }
 
-  handleClickCell(i) {
-    const cells = this.state.cells.slice();
-    cells[i] = !cells[i]
+  create2DArray(N, M, value) {
+    const val = value !== void 0 ? value : 0;
+    const array = []
+    for(let r=0; r<N; r++) {
+      array[r] = []
+      for(let c=0; c<M; c++) {
+        array[r][c] = val;
+      }
+    }
+    return array;
+  };
+
+  handleClickCell({height, width}) {
+    const cells = this.state.cells.slice()
+    cells[height][width] = !cells[height][width]
     this.setState({
       cells: cells,
     });
   }
 
+  isAlive(own_cell, neighbor_cell) {
+    let alive_cells = neighbor_cell.filter((value) => {return value == true})
+    if(own_cell){
+      if (alive_cells.length <= 1) {
+        return false
+      }
+      if (alive_cells.length == 2 || alive_cells.length == 3) {
+        return true
+      }
+      if (alive_cells.length >= 4) {
+        return false
+      }
+    }else{
+      if (alive_cells.length == 3) {
+        return true
+      } 
+    }
+    return false
+  }
+
+  collectNeighborCells({own_h, own_w, cells}) {
+    const height = cells.length
+    const width = cells[0].length
+    
+    let neighbor = []
+    for(let h = own_h - 1; h <= own_h + 1; h++) {
+      for(let w = own_w - 1; w <= own_w + 1; w++) {
+        if (own_h == h && own_w == w) {
+          continue
+        }
+
+        if ((0 <= h && h < height) && (0 <= w && w < width)) {
+          neighbor.push(cells[h][w])
+        }else{
+          continue
+        }
+      }
+    }
+    return neighbor
+  }
+
+  calcNextGeneration() {
+    const cells = this.state.cells.slice()
+    const height = cells.length
+    const width = cells[0].length
+
+    let next_generation_cells = this.create2DArray(height, width, false)
+
+    for(let h = 0; h < height; h++){
+      for(let w = 0; w < width; w++){
+        next_generation_cells[h][w] = this.isAlive(
+          cells[h][w],
+          this.collectNeighborCells({own_h: h, own_w: w, cells: cells}),
+        )
+      }
+    }
+    console.log(next_generation_cells)
+
+    this.setState({
+      cells: next_generation_cells,
+    });
+  }
+
   handleClickControle() {
-    var isPlayed = this.state.isPlayed;
-    isPlayed = !isPlayed
+    let isPlayed = !this.state.isPlayed
 
     this.setState({
       isPlayed: isPlayed,
     })
 
     if (isPlayed) {
-      var cnt = 0
+      let cnt = 0
       this.timer = setInterval(() => {
         console.log(cnt++)
+        this.calcNextGeneration()
       }, 1000)
     } else {
       clearInterval(this.timer)
     }
-
   }
 
   render() {
-    var cell_list = []
-    for(let i = 0; i < this.state.cells.length; i++){
-      cell_list.push(
-        <Cell 
-          key={i}
-          number={this.state.cells[i]}
-          onClick={() => this.handleClickCell(i)}
-        />
-      )
+    let cell_list = []
+    const height = this.state.cells.length
+    const width = this.state.cells[0].length
+
+    for(let h = 0; h < height; h++){
+      for(let w = 0; w < width; w++){
+        cell_list.push(
+          <Cell 
+            key={h * width + w}
+            number={this.state.cells[h][w]}
+            onClick={() => this.handleClickCell({height: h, width: w})}
+          />
+        )
+      }
     }
     return (
       <>

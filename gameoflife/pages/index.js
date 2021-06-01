@@ -166,13 +166,13 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Life Game</title>
-        <meta name="description" content="life game" />
+        <title>Game of life</title>
+        <meta name="description" content="game of life" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Life Game</h1>
+        <h1 className={styles.title}>Game of life</h1>
         <Game />
       </main>
     </div>

@@ -5,9 +5,7 @@ import styles from "../styles/Home.module.css";
 
 function Cell(props) {
   return (
-    <button onClick={props.onClick}>
-     {props.number ? "1" : "0"}
-    </button>
+    <button onClick={props.onClick} className={props.is_alive ? styles.alive : styles.dead}></button>
   )
 }
 
@@ -140,7 +138,7 @@ class Game extends React.Component {
         cell_list.push(
           <Cell 
             key={h * width + w}
-            number={this.state.cells[h][w]}
+            is_alive={this.state.cells[h][w]}
             onClick={() => this.handleClickCell({height: h, width: w})}
           />
         )

@@ -120,3 +120,15 @@
     flex-direction: column;
   }
 }
+
+.alive {
+  min-width: 20px;
+  min-height: 20px;
+
+  background-color: #9EDE73;
+}
+.dead {
+  min-width: 20px;
+  min-height: 20px;
+  background-color: #999999;
+}

@@ -21,8 +21,10 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.timer
+    this.height = 20
+    this.width = 40
     this.state = {
-      cells: this.create2DArray(20, 40, false),
+      cells: this.create2DArray(this.height, this.width, false),
       isPlayed: false,
     };
   }
@@ -68,9 +70,6 @@ class Game extends React.Component {
   }
 
   collectNeighborCells({own_h, own_w, cells}) {
-    const height = cells.length
-    const width = cells[0].length
-    
     let neighbor = []
     for(let h = own_h - 1; h <= own_h + 1; h++) {
       for(let w = own_w - 1; w <= own_w + 1; w++) {
@@ -78,7 +77,7 @@ class Game extends React.Component {
           continue
         }
 
-        if ((0 <= h && h < height) && (0 <= w && w < width)) {
+        if ((0 <= h && h < this.height) && (0 <= w && w < this.width)) {
           neighbor.push(cells[h][w])
         }else{
           continue
@@ -90,13 +89,11 @@ class Game extends React.Component {
 
   calcNextGeneration() {
     const cells = this.state.cells.slice()
-    const height = cells.length
-    const width = cells[0].length
 
-    let next_generation_cells = this.create2DArray(height, width, false)
+    let next_generation_cells = this.create2DArray(this.height, this.width, false)
 
-    for(let h = 0; h < height; h++){
-      for(let w = 0; w < width; w++){
+    for(let h = 0; h < this.height; h++){
+      for(let w = 0; w < this.width; w++){
         next_generation_cells[h][w] = this.isAlive(
           cells[h][w],
           this.collectNeighborCells({own_h: h, own_w: w, cells: cells}),

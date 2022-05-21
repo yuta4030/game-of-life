@@ -14,6 +14,9 @@ export default function Home() {
                 <Link href="/gameoflife">
                     <a>gameoflife</a>
                 </Link>
+                <Link href="/biotope">
+                    <a>biotope</a>
+                </Link>
             </main>
         </div>
     )

@@ -32,16 +32,16 @@ class Game extends React.Component {
   create2DArray(N, M, value) {
     const val = value !== void 0 ? value : 0;
     const array = []
-    for(let r=0; r<N; r++) {
+    for (let r = 0; r < N; r++) {
       array[r] = []
-      for(let c=0; c<M; c++) {
+      for (let c = 0; c < M; c++) {
         array[r][c] = val;
       }
     }
     return array;
   };
 
-  handleClickCell({height, width}) {
+  handleClickCell({ height, width }) {
     const cells = this.state.cells.slice()
     cells[height][width] = !cells[height][width]
     this.setState({
@@ -69,17 +69,17 @@ class Game extends React.Component {
     return false
   }
 
-  collectNeighborCells({own_h, own_w, cells}) {
+  collectNeighborCells({ own_h, own_w, cells }) {
     let neighbor = []
-    for(let h = own_h - 1; h <= own_h + 1; h++) {
-      for(let w = own_w - 1; w <= own_w + 1; w++) {
+    for (let h = own_h - 1; h <= own_h + 1; h++) {
+      for (let w = own_w - 1; w <= own_w + 1; w++) {
         if (own_h == h && own_w == w) {
           continue
         }
 
         if ((0 <= h && h < this.height) && (0 <= w && w < this.width)) {
           neighbor.push(cells[h][w])
-        }else{
+        } else {
           continue
         }
       }
@@ -92,11 +92,11 @@ class Game extends React.Component {
 
     let next_generation_cells = this.create2DArray(this.height, this.width, false)
 
-    for(let h = 0; h < this.height; h++){
-      for(let w = 0; w < this.width; w++){
+    for (let h = 0; h < this.height; h++) {
+      for (let w = 0; w < this.width; w++) {
         next_generation_cells[h][w] = this.isAlive(
           cells[h][w],
-          this.collectNeighborCells({own_h: h, own_w: w, cells: cells}),
+          this.collectNeighborCells({ own_h: h, own_w: w, cells: cells }),
         )
       }
     }
@@ -130,28 +130,28 @@ class Game extends React.Component {
     const height = this.state.cells.length
     const width = this.state.cells[0].length
 
-    for(let h = 0; h < height; h++){
-      for(let w = 0; w < width; w++){
+    for (let h = 0; h < height; h++) {
+      for (let w = 0; w < width; w++) {
         cell_list.push(
-          <Cell 
+          <Cell
             key={h * width + w}
             is_alive={this.state.cells[h][w]}
-            onClick={() => this.handleClickCell({height: h, width: w})}
+            onClick={() => this.handleClickCell({ height: h, width: w })}
           />
         )
       }
     }
     return (
       <>
-      <div className={styles.grid}>
-        {cell_list}
-      </div>
-      <div className={styles.description}>
-        <ControlePanel 
-          isPlayed={this.state.isPlayed}
-          onClick={() => this.handleClickControle()}
-        />
-      </div>
+        <div className={styles.grid}>
+          {cell_list}
+        </div>
+        <div className={styles.description}>
+          <ControlePanel
+            isPlayed={this.state.isPlayed}
+            onClick={() => this.handleClickControle()}
+          />
+        </div>
       </>
     );
   }

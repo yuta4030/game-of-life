@@ -157,7 +157,7 @@ class Game extends React.Component {
   }
 }
 
-export default function Home() {
+export default function gameoflife() {
   return (
     <div className={styles.container}>
       <Head>

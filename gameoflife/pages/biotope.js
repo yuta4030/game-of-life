@@ -17,6 +17,14 @@ function ControlePanel(props) {
   )
 }
 
+class Glass extends React.Component {
+  constructor(props) {
+    super(props);
+    this.breedingRateByOwn = 0.5
+    this.breedingRateByNeibhor = 0.3
+  }
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -43,30 +51,25 @@ class Game extends React.Component {
 
   handleClickCell({ height, width }) {
     const cells = this.state.cells.slice()
-    cells[height][width] = !cells[height][width]
+    cells[height][width] = new Glass()
     this.setState({
       cells: cells,
     });
   }
 
   isAlive(own_cell, neighbor_cell) {
-    let alive_cells = neighbor_cell.filter((value) => {return value == true})
-    if(own_cell){
-      if (alive_cells.length <= 1) {
-        return false
+    let alive_cells = neighbor_cell.filter((value) => { return value != null })
+    if (own_cell) {
+      if (Math.random() < own_cell.breedingRateByOwn) {
+        return own_cell;
       }
-      if (alive_cells.length == 2 || alive_cells.length == 3) {
-        return true
-      }
-      if (alive_cells.length >= 4) {
-        return false
-      }
-    }else{
-      if (alive_cells.length == 3) {
-        return true
-      } 
     }
-    return false
+    for (const cell of alive_cells) {
+      if (Math.random() < cell.breedingRateByNeibhor) {
+        return cell;
+      }
+    }
+    return false;
   }
 
   collectNeighborCells({ own_h, own_w, cells }) {
@@ -157,17 +160,17 @@ class Game extends React.Component {
   }
 }
 
-export default function gameoflife() {
+export default function biotope() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Game of life</title>
-        <meta name="description" content="game of life" />
+        <title>biotope</title>
+        <meta name="description" content="biotope" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Game of life</h1>
+        <h1 className={styles.title}>Biotope</h1>
         <Game />
       </main>
     </div>

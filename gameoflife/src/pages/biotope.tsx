@@ -1,9 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import {Game} from "../components/game"
-
-
+import { Game } from "../components/game";
 
 const biotope = () => {
   return (
@@ -20,6 +18,6 @@ const biotope = () => {
       </main>
     </div>
   );
-}
+};
 
-export default biotope
+export default biotope;

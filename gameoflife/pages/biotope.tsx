@@ -3,13 +3,13 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 
 
-function Cell(props) {
+const Cell = (props: any): JSX.Element => {
   return (
     <button onClick={props.onClick} className={props.is_alive ? styles.alive : styles.dead}></button>
   )
 }
 
-function ControlePanel(props) {
+const ControlePanel = (props: any): JSX.Element => {
   return (
     <button onClick={props.onClick}>
       {props.isPlayed ? "⏸" : "▶️️"}
@@ -17,8 +17,12 @@ function ControlePanel(props) {
   )
 }
 
+
 class Glass extends React.Component {
-  constructor(props) {
+  breedingRateByNeibhor: number
+  breedingRateByOwn: number
+
+  constructor(props: any) {
     super(props);
     this.breedingRateByOwn = 0.5
     this.breedingRateByNeibhor = 0.3
@@ -26,7 +30,16 @@ class Glass extends React.Component {
 }
 
 class Game extends React.Component {
-  constructor(props) {
+
+  timer: NodeJS.Timer
+  height: number
+  width: number
+  state: {
+    cells: Glass[][] | boolean[][],
+    isPlayed: boolean,
+  }
+
+  constructor(props: any) {
     super(props);
     this.timer
     this.height = 20
@@ -37,11 +50,11 @@ class Game extends React.Component {
     };
   }
 
-  create2DArray(N, M, value) {
-    const val = value !== void 0 ? value : 0;
-    const array = []
+  create2DArray = (N: number, M: number, value: boolean) => {
+    const val = value !== void 0 ? value : false;
+    let array: boolean[][] = new Array();
     for (let r = 0; r < N; r++) {
-      array[r] = []
+      array[r] = new Array();
       for (let c = 0; c < M; c++) {
         array[r][c] = val;
       }
@@ -49,16 +62,16 @@ class Game extends React.Component {
     return array;
   };
 
-  handleClickCell({ height, width }) {
+  handleClickCell = (height: number, width: number) => {
     const cells = this.state.cells.slice()
-    cells[height][width] = new Glass()
+    cells[height][width] = new Glass(this.props)
     this.setState({
       cells: cells,
     });
   }
 
-  isAlive(own_cell, neighbor_cell) {
-    let alive_cells = neighbor_cell.filter((value) => { return value != null })
+  isAlive = (own_cell: any , neighbor_cell: Glass[]) => {
+    let alive_cells: Glass[] = neighbor_cell.filter((value) => { return value != null })
     if (own_cell) {
       if (Math.random() < own_cell.breedingRateByOwn) {
         return own_cell;
@@ -72,7 +85,7 @@ class Game extends React.Component {
     return false;
   }
 
-  collectNeighborCells({ own_h, own_w, cells }) {
+  collectNeighborCells = (own_h: number, own_w: number, cells: any) => {
     let neighbor = []
     for (let h = own_h - 1; h <= own_h + 1; h++) {
       for (let w = own_w - 1; w <= own_w + 1; w++) {
@@ -90,7 +103,7 @@ class Game extends React.Component {
     return neighbor
   }
 
-  calcNextGeneration() {
+  calcNextGeneration = () => {
     const cells = this.state.cells.slice()
 
     let next_generation_cells = this.create2DArray(this.height, this.width, false)
@@ -99,7 +112,7 @@ class Game extends React.Component {
       for (let w = 0; w < this.width; w++) {
         next_generation_cells[h][w] = this.isAlive(
           cells[h][w],
-          this.collectNeighborCells({ own_h: h, own_w: w, cells: cells }),
+          this.collectNeighborCells(h, w, cells),
         )
       }
     }
@@ -110,7 +123,7 @@ class Game extends React.Component {
     });
   }
 
-  handleClickControle() {
+  handleClickControle = () => {
     let isPlayed = !this.state.isPlayed
 
     this.setState({
@@ -128,7 +141,7 @@ class Game extends React.Component {
     }
   }
 
-  render() {
+  render = () => {
     let cell_list = []
     const height = this.state.cells.length
     const width = this.state.cells[0].length
@@ -139,7 +152,7 @@ class Game extends React.Component {
           <Cell
             key={h * width + w}
             is_alive={this.state.cells[h][w]}
-            onClick={() => this.handleClickCell({ height: h, width: w })}
+            onClick={() => this.handleClickCell(h, w)}
           />
         )
       }
@@ -160,7 +173,7 @@ class Game extends React.Component {
   }
 }
 
-export default function biotope() {
+const biotope = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -176,3 +189,5 @@ export default function biotope() {
     </div>
   );
 }
+
+export default biotope

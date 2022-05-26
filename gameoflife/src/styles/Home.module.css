@@ -121,14 +121,15 @@
   }
 }
 
-.alive {
+.grass {
   min-width: 20px;
   min-height: 20px;
 
-  background-color: #9EDE73;
+  background-color: #a1de93;
 }
-.dead {
+.empty {
   min-width: 20px;
   min-height: 20px;
+  
   background-color: #999999;
 }

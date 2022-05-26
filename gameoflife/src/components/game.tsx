@@ -1,6 +1,6 @@
 import React from "react";
-import Cell from "../components/cell";
-import { Glass } from "../components/cell";
+import CellDisplay from "../components/cell";
+import { Cell, Grass, Empty } from "../components/cell";
 import ControlePanel from "../components/controle_panel";
 import styles from "../styles/Home.module.css";
 
@@ -9,7 +9,7 @@ export class Game extends React.Component {
   height: number;
   width: number;
   state: {
-    cells: Glass[][] | boolean[][];
+    cells: Cell[][];
     isPlayed: boolean;
   };
 
@@ -19,46 +19,37 @@ export class Game extends React.Component {
     this.height = 20;
     this.width = 40;
     this.state = {
-      cells: this.create2DArray(this.height, this.width, false),
+      cells: this.create2DArray(this.height, this.width, new Empty(this.props)),
       isPlayed: false,
     };
   }
 
-  create2DArray = (N: number, M: number, value: boolean) => {
-    const val = value !== void 0 ? value : false;
-    let array: boolean[][] = new Array();
+  create2DArray = (N: number, M: number, cell: Cell): Cell[][] => {
+    let array: Cell[][] = new Array();
     for (let r = 0; r < N; r++) {
       array[r] = new Array();
       for (let c = 0; c < M; c++) {
-        array[r][c] = val;
+        array[r][c] = cell;
       }
     }
     return array;
   };
 
-  handleClickCell = (height: number, width: number) => {
+  handleClickCell = (height: number, width: number): void => {
     const cells = this.state.cells.slice();
-    cells[height][width] = new Glass(this.props);
+    const cell =
+      cells[height][width] instanceof Empty
+        ? new Grass(this.props)
+        : new Empty(this.props);
+
+    cells[height][width] = cell;
     this.setState({
       cells: cells,
     });
   };
 
-  isAlive = (own_cell: any, neighbor_cell: Glass[]) => {
-    let alive_cells: Glass[] = neighbor_cell.filter((value) => {
-      return value != null;
-    });
-    if (own_cell) {
-      if (Math.random() < own_cell.breedingRateByOwn) {
-        return own_cell;
-      }
-    }
-    for (const cell of alive_cells) {
-      if (Math.random() < cell.breedingRateByNeibhor) {
-        return cell;
-      }
-    }
-    return false;
+  next = (cell: Cell, neighbor_cell: Cell[]) => {
+    return cell;
   };
 
   collectNeighborCells = (own_h: number, own_w: number, cells: any) => {
@@ -85,12 +76,12 @@ export class Game extends React.Component {
     let next_generation_cells = this.create2DArray(
       this.height,
       this.width,
-      false
+      new Empty(this.props)
     );
 
     for (let h = 0; h < this.height; h++) {
       for (let w = 0; w < this.width; w++) {
-        next_generation_cells[h][w] = this.isAlive(
+        next_generation_cells[h][w] = this.next(
           cells[h][w],
           this.collectNeighborCells(h, w, cells)
         );
@@ -122,15 +113,15 @@ export class Game extends React.Component {
   };
 
   render = () => {
-    let cell_list = [];
+    let displays = [];
     const height = this.state.cells.length;
     const width = this.state.cells[0].length;
 
     for (let h = 0; h < height; h++) {
       for (let w = 0; w < width; w++) {
-        cell_list.push(
-          <Cell
-            isAlive={this.state.cells[h][w]}
+        displays.push(
+          <CellDisplay
+            cell={this.state.cells[h][w]}
             onClick={() => this.handleClickCell(h, w)}
           />
         );
@@ -138,7 +129,7 @@ export class Game extends React.Component {
     }
     return (
       <>
-        <div className={styles.grid}>{cell_list}</div>
+        <div className={styles.grid}>{displays}</div>
         <div className={styles.description}>
           <ControlePanel
             isPlayed={this.state.isPlayed}

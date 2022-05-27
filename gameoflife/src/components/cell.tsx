@@ -10,18 +10,22 @@ export interface Cell {
 export class Grass extends React.Component implements Cell {
   name: string = "grass";
   style: string = styles.grass;
-  breedingRateByNeibhor: number = 0.5;
-  breedingRate: number = 0.3;
+  breedingRateByNeibhor: number = 0.3;
+  breedingRate: number = 0.5;
 
   constructor(props: any) {
     super(props);
   }
 
   next(neighbor_cells: Cell[]): Cell {
-    if (this.breedingRate < Math.random()) {
+    if (this.breedingRate > Math.random()) {
       return this;
     }
     return new Empty(this.props);
+  }
+
+  is_spread(): boolean {
+    return this.breedingRateByNeibhor > Math.random();
   }
 }
 
@@ -34,6 +38,11 @@ export class Empty extends React.Component implements Cell {
   }
 
   next(neighbor_cells: Cell[]): Cell {
+    for (let cell of neighbor_cells) {
+      if (cell instanceof Grass && cell.is_spread()) {
+        return new Grass(this.props);
+      }
+    }
     return new Empty(this.props);
   }
 }

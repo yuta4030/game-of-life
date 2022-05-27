@@ -48,10 +48,6 @@ export class Game extends React.Component {
     });
   };
 
-  next = (cell: Cell, neighbor_cell: Cell[]) => {
-    return cell;
-  };
-
   collectNeighborCells = (own_h: number, own_w: number, cells: any) => {
     let neighbor = [];
     for (let h = own_h - 1; h <= own_h + 1; h++) {
@@ -81,8 +77,7 @@ export class Game extends React.Component {
 
     for (let h = 0; h < this.height; h++) {
       for (let w = 0; w < this.width; w++) {
-        next_generation_cells[h][w] = this.next(
-          cells[h][w],
+        next_generation_cells[h][w] = cells[h][w].next(
           this.collectNeighborCells(h, w, cells)
         );
       }
